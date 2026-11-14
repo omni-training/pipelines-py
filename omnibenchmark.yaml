@@ -1,2 +1,3 @@
 entrypoints:
-  default: run.py
+  scanpy: run.py
+  brisc: run-brisc.py
