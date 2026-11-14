@@ -142,10 +142,19 @@ n_cluster = clusters_truth_num + args.d_cluster
 # allow_float=True: many h5ad files store raw counts as float32
 sc = timed("find_mit_gene", lambda: sc.qc_metrics(allow_float=True))
 
+qc = sc.uns['qc_thresholds']
+min_genes = qc[qc["metric"] == "nFeature"]["min"].values[0]
+max_genes = qc[qc["metric"] == "nFeature"]["max"].values[0]
+max_counts = qc[qc["metric"] == "nCount"]["max"].values[0]
+max_mt = qc[qc["metric"] == "percent.mt"]["max"].values[0]
+
 # filtering: brisc defaults (<=5% mito, >=100 genes, non-zero MALAT1);
 # subset=True drops failing cells, like scanpy does
 if args.filter == "manual":
-    sc = timed("filter", lambda: sc.qc(subset=True, allow_float=True))
+    sc = timed("filter", lambda: sc.qc(subset=True, allow_float=True, 
+                                       max_mito_fraction = max_mt,
+                                       min_genes = min_genes, nonzero_MALAT1=False))
+
 
 # HVGs (brisc runs this on raw counts, so before normalization)
 sc = timed("hvg", lambda: sc.hvg(num_genes=args.n_hvg))
