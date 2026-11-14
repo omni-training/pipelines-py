@@ -143,10 +143,10 @@ n_cluster = clusters_truth_num + args.d_cluster
 sc = timed("find_mit_gene", lambda: sc.qc_metrics(allow_float=True))
 
 qc = sc.uns['qc_thresholds']
-min_genes = qc[qc["metric"] == "nFeature"]["min"].values[0]
-max_genes = qc[qc["metric"] == "nFeature"]["max"].values[0]
-max_counts = qc[qc["metric"] == "nCount"]["max"].values[0]
-max_mt = qc[qc["metric"] == "percent.mt"]["max"].values[0]
+min_genes = int(sc.uns['qc_thresholds']["min"][0])
+#max_genes = int(sc.uns['qc_thresholds']["max"][0])
+#max_counts = int(sc.uns['qc_thresholds']["max"][0])
+max_mt = sc.uns['qc_thresholds']["max"][2]/100.
 
 # filtering: brisc defaults (<=5% mito, >=100 genes, non-zero MALAT1);
 # subset=True drops failing cells, like scanpy does
