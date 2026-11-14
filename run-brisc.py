@@ -144,8 +144,8 @@ sc = timed("find_mit_gene", lambda: sc.qc_metrics(allow_float=True))
 
 qc = sc.uns['qc_thresholds']
 min_genes = int(sc.uns['qc_thresholds']["min"][0])
-#max_genes = int(sc.uns['qc_thresholds']["max"][0])
-#max_counts = int(sc.uns['qc_thresholds']["max"][0])
+max_genes = int(sc.uns['qc_thresholds']["max"][0])
+max_counts = int(sc.uns['qc_thresholds']["max"][1])
 max_mt = sc.uns['qc_thresholds']["max"][2]/100.
 
 # filtering: brisc defaults (<=5% mito, >=100 genes, non-zero MALAT1);
@@ -153,6 +153,7 @@ max_mt = sc.uns['qc_thresholds']["max"][2]/100.
 if args.filter == "manual":
     sc = timed("filter", lambda: sc.qc(subset=True, allow_float=True, 
                                        max_mito_fraction = max_mt,
+                                       custom_filter=(pl.col("num_counts") <= max_counts) & (pl.col("num_genes") <= max_genes),
                                        min_genes = min_genes, nonzero_MALAT1=False))
 
 
